@@ -1,6 +1,9 @@
 import socket
 from celery import shared_task
 from django.core.cache import cache
+from pyq3serverlist import Server as Q3Server
+from pyq3serverlist import PyQ3SLError, PyQ3SLTimeoutError
+
 
 @shared_task
 def query_ut99_server(obj):
@@ -36,7 +39,7 @@ def query_ut99_server(obj):
         cache.set(f'ut99-{obj.server_host}', result_dict, timeout=60)
 
     except Exception as e:
-        print(f"Error querying UT99 server: {str(e)}")
+        print(f"Error querying UT99 server {server_host_value}[{server_port_value}]: {str(e)}")
         sock.close()
 
         result_dict = {
@@ -52,3 +55,50 @@ def query_ut99_server(obj):
     finally:
         # Close the socket connection
         sock.close()
+
+
+@shared_task
+def query_q3a_server(obj):
+    # Instantiate server object
+    server_host_value = obj.server_host
+    server_port_value = int(obj.server_port)
+    server = Q3Server(server_host_value, server_port_value)
+
+    # Gametype dict
+    sv_gametypes = {
+        '0': "Deathmatch",
+        '1': "1v1 Tournament",
+        '2': "1PDM",  # Not used in multiplayer but added for completeness
+        '3': "Team Deathmatch",
+        '4': "Capture the Flag"
+    }
+
+    try:
+        # Fetch the server data
+        info = server.get_status()
+
+        # Build the dictionary
+        result_dict = {
+            'status': 'Available',
+            'maptitle': info['mapname'],
+            'mapname': info['mapname'],
+            'gametype': sv_gametypes[info['g_gametype']],
+            'numplayers': len(info['players']),
+            'maxplayers': info['sv_maxclients'],
+        }
+        # Save to cache
+        cache.set(f'q3a-{obj.server_host}', result_dict, timeout=60)
+
+    except (PyQ3SLTimeoutError, PyQ3SLError) as e:
+        print(f"Error querying UT99 server {server_port_value}[{server_port_value}]: {str(e)}")
+        # Build the dictionary
+        result_dict = {
+            'status': 'Unreachable',
+            'maptitle': 'N/A',
+            'mapname': 'N/A',
+            'gametype': 'N/A',
+            'numplayers': 'N/A',
+            'maxplayers': 'N/A'
+        }
+        # Save to cache
+        cache.set(f'q3a-{obj.server_host}', result_dict, timeout=60)

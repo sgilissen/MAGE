@@ -1,6 +1,7 @@
 from polymorphic.models import PolymorphicModel
 from django.db import models
 
+
 # Create a PolymorphicModel so we can subclass the various servers
 # This requires django-polymorphic to be installed. This makes our job a bit easier.
 class GameServer(PolymorphicModel):

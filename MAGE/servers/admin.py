@@ -1,7 +1,7 @@
 from django.contrib import admin
 from polymorphic.admin import PolymorphicChildModelAdmin, PolymorphicParentModelAdmin, PolymorphicChildModelFilter
 from .models import GameServer, UT99Server, Q3AServer
-from .tasks import query_ut99_server
+from .tasks import query_ut99_server, query_q3a_server
 from django.core.cache import cache
 import socket
 from django.utils.html import format_html
@@ -60,8 +60,32 @@ class UT99ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
 
 
 @admin.register(Q3AServer)
-class Q3AServerAdmin(ServerChildAdmin):
+class Q3AServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
     base_model = Q3AServer
+    list_display = ["server_name", "server_host", "server_port", "display_server_status",
+                    "display_server_maptitle", "display_server_mapname", "display_server_gametype",
+                    "display_server_numplayers", "display_server_maxplayers"]
+
+    def query_server(self, obj):
+        udp_data = cache.get(f'q3a-{obj.server_host}')
+
+        # Server data is not cached. Perform asynchronous task to cache data.
+        if udp_data is None:
+            query_q3a_server(obj)
+            udp_data = {
+                'status': 'Polling server...',
+                'maptitle': 'N/A',
+                'mapname': 'N/A',
+                'gametype': 'N/A',
+                'numplayers': 'N/A',
+                'maxplayers': 'N/A'
+            }
+
+        return udp_data
+
+    def get_value_or_na(self, obj, key):
+        server_data = self.query_server(obj)
+        return server_data.get(key, 'N/A')
 
 
 @admin.register(GameServer)
