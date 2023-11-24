@@ -1,6 +1,8 @@
 from django.contrib import admin
 from polymorphic.admin import PolymorphicChildModelAdmin, PolymorphicParentModelAdmin, PolymorphicChildModelFilter
 from .models import GameServer, UT99Server, Q3AServer
+from .tasks import query_ut99_server
+from django.core.cache import cache
 import socket
 from django.utils.html import format_html
 
@@ -36,42 +38,13 @@ class UT99ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
                     "display_server_numplayers", "display_server_maxplayers"]
 
     def query_server(self, obj):
-        """
-        Query the server via UDP to get server data
-        :param obj: The current server object
-        :return:
-        """
-        server_host_value = obj.server_host
-        server_port_value = obj.server_port
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try:
-            # Create a socket connection
-            sock.settimeout(1)  # Set a timeout for the socket
+        udp_data = cache.get(f'ut99-{obj.server_host}')
 
-            # Construct the UQP query string
-            query_string = "\\info\\"
-
-            # Send the query to the server
-            # UT99 UDP query uses gameport + 1
-            sock.sendto(query_string.encode(), (server_host_value, int(server_port_value) + 1))
-
-            # Receive and decode the response
-            response, _ = sock.recvfrom(2048)
-            response = response.decode("utf-8", errors="replace")
-
-            # Parse the response and format to dict
-            pairs = response.split('\\')[1:]
-            result_dict = dict(zip(pairs[::2], pairs[1::2]))
-            result_dict['status'] = 'Available'
-
-            return result_dict
-
-        except Exception as e:
-            print(f"Error querying UT99 server: {str(e)}")
-            sock.close()
-
-            return {
-                'status': 'Unreachable',
+        # Server data is not cached. Perform asynchronous task to cache data.
+        if udp_data is None:
+            query_ut99_server(obj)
+            udp_data = {
+                'status': 'Polling server...',
                 'maptitle': 'N/A',
                 'mapname': 'N/A',
                 'gametype': 'N/A',
@@ -79,9 +52,7 @@ class UT99ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
                 'maxplayers': 'N/A'
             }
 
-        finally:
-            # Close the socket connection
-            sock.close()
+        return udp_data
 
     def get_value_or_na(self, obj, key):
         server_data = self.query_server(obj)

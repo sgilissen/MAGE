@@ -1,8 +1,8 @@
 import socket
 from celery import shared_task
+from django.core.cache import cache
 
-
-@shared_task()
+@shared_task
 def query_ut99_server(obj):
     """
     Query the server via UDP to get server data
@@ -32,13 +32,14 @@ def query_ut99_server(obj):
         result_dict = dict(zip(pairs[::2], pairs[1::2]))
         result_dict['status'] = 'Available'
 
-        return result_dict
+        # return result_dict
+        cache.set(f'ut99-{obj.server_host}', result_dict, timeout=60)
 
     except Exception as e:
         print(f"Error querying UT99 server: {str(e)}")
         sock.close()
 
-        return {
+        result_dict = {
             'status': 'Unreachable',
             'maptitle': 'N/A',
             'mapname': 'N/A',
@@ -46,6 +47,7 @@ def query_ut99_server(obj):
             'numplayers': 'N/A',
             'maxplayers': 'N/A'
         }
+        cache.set(f'ut99-{obj.server_host}', result_dict, timeout=60)
 
     finally:
         # Close the socket connection
