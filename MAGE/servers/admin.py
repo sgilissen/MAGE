@@ -3,6 +3,7 @@ from polymorphic.admin import PolymorphicChildModelAdmin, PolymorphicParentModel
 from .models import GameServer, UT99Server, Q3AServer
 from .tasks import query_ut99_server, query_q3a_server
 from django.core.cache import cache
+from django.contrib.contenttypes.models import ContentType
 import socket
 from django.utils.html import format_html
 
@@ -38,12 +39,14 @@ class UT99ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
                     "display_server_numplayers", "display_server_maxplayers"]
 
     def query_server(self, obj):
-        udp_data = cache.get(f'ut99-{obj.server_host}')
+        # Get the server type from the model to cache it. This way we don't have to hardcode the cache identifier.
+        server_type = ContentType.objects.get_for_model(obj).model
+        server_data = cache.get(f'{server_type}-{obj.server_host}')
 
         # Server data is not cached. Perform asynchronous task to cache data.
-        if udp_data is None:
+        if server_data is None:
             query_ut99_server(obj)
-            udp_data = {
+            server_data = {
                 'status': 'Polling server...',
                 'maptitle': 'N/A',
                 'mapname': 'N/A',
@@ -52,7 +55,7 @@ class UT99ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
                 'maxplayers': 'N/A'
             }
 
-        return udp_data
+        return server_data
 
     def get_value_or_na(self, obj, key):
         server_data = self.query_server(obj)
@@ -67,12 +70,14 @@ class Q3AServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
                     "display_server_numplayers", "display_server_maxplayers"]
 
     def query_server(self, obj):
-        udp_data = cache.get(f'q3a-{obj.server_host}')
+        # Get the server type from the model to cache it. This way we don't have to hardcode the cache identifier.
+        server_type = ContentType.objects.get_for_model(obj).model
+        server_data = cache.get(f'{server_type}-{obj.server_host}')
 
         # Server data is not cached. Perform asynchronous task to cache data.
-        if udp_data is None:
+        if server_data is None:
             query_q3a_server(obj)
-            udp_data = {
+            server_data = {
                 'status': 'Polling server...',
                 'maptitle': 'N/A',
                 'mapname': 'N/A',
@@ -81,7 +86,7 @@ class Q3AServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
                 'maxplayers': 'N/A'
             }
 
-        return udp_data
+        return server_data
 
     def get_value_or_na(self, obj, key):
         server_data = self.query_server(obj)

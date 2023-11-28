@@ -1,0 +1,83 @@
+{% load custom_filters %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <title>MAGE</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		{% tailwind_css %}
+        <script src="{% static 'js/mage.js' %}"></script>
+	</head>
+
+	<body class="bg-gray-800 font-sans leading-normal tracking-normal">
+    <div class="min-h-screen min-w-screen">
+        <header class="w-full text-white bg-indigo-900 drop-shadow-xl body-font shadow-gray-800">
+            <div class="container flex flex-col items-start p-6 mx-auto md:flex-row">
+                <div class="flex items-center mb-4 font-medium text-gray-900 title-font md:mb-0">
+                    <svg class="w-auto h-8 text-white fill-current" viewBox="0 0 120 80"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.231,73.072c0,0-10.062-0.474-2.278-2.468c7.783-1.993,24.488-5.695,25.912-9.018c0,0-0.949-1.377-0.569-3.749  c0.379-2.373,1.897-5.695,1.897-5.695s0.333-4.082,0-4.746s16.304-23.421,16.304-23.421s1.281-2.349,1.779-2.705  c0.499-0.356,1.709,0.285,3.275,1.139c1.565,0.854,1.898,2.539,1.898,2.539l9.919,3.655c0,0-0.949-0.046,2.42,0.57  s10.963,5.339,12.244,6.265c1.281,0.925,3.56,3.63,3.56,3.63s0.143,0.569,0,3.488c-0.143,2.918,2.801,23.301,3.274,25.2  c0.475,1.9-13.549-13.312-14.901-17.939c0,0-2.753,1.352-2.468,4.84c0.284,3.488,0.355,5.838-0.57,6.764  c-0.925,0.925-0.712,0.782,0.214,0.996s2.278,0.854,3.773,2.136c1.494,1.281,3.203,3.488,5.979,4.129s5.339,1.779,7.048,2.634  c1.708,0.854,4.698,3.346,5.766,3.346c1.068,0-0.925,2.492-3.844,2.278s-8.97-0.926-10.465-0.498  c-1.495,0.427-13.882,1.521-19.078,0.512c-5.197-1.01-23.777-0.726-26.127-1.936c-2.349-1.21-9.183-2.35-10.82-2.35  S10.231,73.072,10.231,73.072z"
+                                fill-rule="nonzero" /></svg>
+                    <p class="text-2xl mr-4 ml-0">{{ title }}</p></div>
+                <div class="flex items-center justify-center text-base md:ml-auto">
+                    <p>Server Status</p>
+                </div>
+
+            </div>
+        </header>
+        <!-- Start server list -->
+        <div class="container flex flex-col items-start px-6 pt-2 pb-0 mx-auto my-0 md:flex-row">
+            <h1 class="text-gray-100 text-3xl p-0">Server Status</h1>
+        </div>
+        <div class="container flex flex-col items-start px-6 pt-2 mx-auto md:flex-row">
+            <ul role="list" class="divide-y divide-gray-100 w-full">
+                {% for srv, data in servers.items %}
+                <li class="flex justify-between gap-x-6 py-5 w-full">
+                    <div class="flex min-w-0 gap-x-4">
+                        <div class="bg-indigo-900 rounded-2xl drop-shadow-xl">
+                            {% with 'img/maps/'|add:data.server_type|add:'/'|add:data.mapname|add:'.jpg' as map_image_path %}
+                            {% if map_image_path|file_exists %}
+                            <img class="h-20 w-24 flex-none rounded-2xl" src="{% static 'img/maps/'|add:data.server_type|add:'/'|add:data.mapname|add:'.jpg' %}" alt="data.mapname">
+                            {% else %}
+                            <img class="h-20 w-24 flex-none rounded-2xl" src="{% static 'img/maps/nomap.jpg' %}" alt="No map screenshot">
+                            {% endif %}
+                            {% endwith %}
+                            <p class="text-center text-gray-500 text-xs pt-1">{{ data.mapname }}</p>
+                        </div>
+
+                        <div class="min-w-0 flex-auto">
+                            <p class="text-lg font-semibold leading-6 text-gray-100 bg-indigo-900 rounded-2xl p-1 pr-2 drop-shadow-xl"><img class="inline p-1 bg-black rounded-xl" src="{% static 'img/icons/'|add:data.server_type|add:'.png' %}" alt="Q3A"><span class="pl-1">{{ srv }}</span></p>
+                            <p class="mt-1 truncate text-xs leading-5 text-gray-100"><strong>Game type: </strong>{{ data.gametype }}</p>
+                            <p class="mt-1 truncate text-xs leading-5 text-gray-100"><strong>Map title: </strong>{{ data.maptitle }}</p>
+
+                        </div>
+                    </div>
+                    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                        <div class="mt-1 flex items-center gap-x-1.5">
+                            {% if data.status == "Available" %}
+                            <div class="flex-none rounded-full bg-emerald-500/20 p-1">
+                                <div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
+                            </div>
+                            {% elif data.status == "Polling..." %}
+                            <div class="flex-none rounded-full bg-orange-500/20 p-1">
+                                <div class="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                            </div>
+                            {% else %}
+                                <div class="flex-none rounded-full bg-red-500/20 p-1">
+                                    <div class="h-1.5 w-1.5 rounded-full bg-red-500"></div>
+                                </div>
+                            {% endif %}
+                            <p class="text-xs leading-5 text-gray-500">{{ data.status }}</p>
+                        </div>
+                        <p class="mt-1 truncate text-xs leading-5 text-gray-100"><strong>Players: </strong>{{ data.numplayers }} / {{ data.maxplayers }}</p>
+                        <p class="mt-1 truncate text-xs leading-5 text-gray-100"><strong>Host: </strong>{{ data.hostname }}:{{ data.port }}</p>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+	</body>
+</html>

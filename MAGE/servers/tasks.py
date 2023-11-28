@@ -4,6 +4,8 @@ from django.core.cache import cache
 from pyq3serverlist import Server as Q3Server
 from pyq3serverlist import PyQ3SLError, PyQ3SLTimeoutError
 
+# Polling timeout. Maybe we can set this up in a setting?
+polling_timeout = 300
 
 @shared_task
 def query_ut99_server(obj):
@@ -36,7 +38,7 @@ def query_ut99_server(obj):
         result_dict['status'] = 'Available'
 
         # return result_dict
-        cache.set(f'ut99-{obj.server_host}', result_dict, timeout=60)
+        cache.set(f'ut99server-{obj.server_host}', result_dict, timeout=polling_timeout)
 
     except Exception as e:
         print(f"Error querying UT99 server {server_host_value}[{server_port_value}]: {str(e)}")
@@ -50,7 +52,7 @@ def query_ut99_server(obj):
             'numplayers': 'N/A',
             'maxplayers': 'N/A'
         }
-        cache.set(f'ut99-{obj.server_host}', result_dict, timeout=60)
+        cache.set(f'ut99server-{obj.server_host}', result_dict, timeout=polling_timeout)
 
     finally:
         # Close the socket connection
@@ -87,7 +89,7 @@ def query_q3a_server(obj):
             'maxplayers': info['sv_maxclients'],
         }
         # Save to cache
-        cache.set(f'q3a-{obj.server_host}', result_dict, timeout=60)
+        cache.set(f'q3aserver-{obj.server_host}', result_dict, timeout=60)
 
     except (PyQ3SLTimeoutError, PyQ3SLError) as e:
         print(f"Error querying UT99 server {server_port_value}[{server_port_value}]: {str(e)}")
@@ -101,4 +103,4 @@ def query_q3a_server(obj):
             'maxplayers': 'N/A'
         }
         # Save to cache
-        cache.set(f'q3a-{obj.server_host}', result_dict, timeout=60)
+        cache.set(f'q3aserver-{obj.server_host}', result_dict, timeout=60)
