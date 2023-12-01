@@ -1,0 +1,108 @@
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ python UT2k4test.py 
+b'\x80\x00\x00\x00\x02\x06\x00\x00\x00\rnM.gunnie/be\x004\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x05\x00\x00\x00\tNoctisBE\x00<\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00 \x00\x00\x00\x00\x13\x1b\n\xf5\nRed Team Score\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x1b\n\xf5\nBlue Team Score\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+0
+11
+Player info: [{'team': '-', 'player_id': '-', 'name': ('\x06', 7), 'ping': (2, 8), 'score': (2, 8), 'id': (0, 12)}]
+77
+15
+Error querying UT2k4 server gameserver.noctis.info[8778]: 77
+{'status': 'Unreachable', 'maptitle': 'N/A', 'mapname': 'N/A', 'gametype': 'N/A', 'numplayers': 'N/A', 'maxplayers': 'N/A'}
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ python UT2k4test.py 
+b'\x80\x00\x00\x00\x02\x05\x00\x00\x00\tNoctisBE\x00<\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00 \x00\x00\x00\x00\x13\x1b\n\xf5\nRed Team Score\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x1b\n\xf5\nBlue Team Score\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+0
+11
+Player info: [{'team': '-', 'player_id': '-', 'name': ('\x05', 7), 'ping': (2, 8), 'score': (2, 8), 'id': (0, 12)}]
+111
+15
+Error querying UT2k4 server gameserver.noctis.info[8778]: 111
+{'status': 'Unreachable', 'maptitle': 'N/A', 'mapname': 'N/A', 'gametype': 'N/A', 'numplayers': 'N/A', 'maxplayers': 'N/A'}
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ python UT2k4test.py 
+b'\x80\x00\x00\x00\x02\x05\x00\x00\x00\tNoctisBE\x00<\x00\x00\x00\x17\x00\x00\x00\x00\x00\x00 \x00\x00\x00\x00\x13\x1b\n\xf5\nRed Team Score\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x1b\n\xf5\nBlue Team Score\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00'
+0
+11
+Player info: [{'team': '-', 'player_id': '-', 'name': ('\x05', 7), 'ping': (2, 8), 'score': (2, 8), 'id': (0, 12)}]
+111
+15
+Error querying UT2k4 server gameserver.noctis.info[8778]: 111
+{'status': 'Unreachable', 'maptitle': 'N/A', 'mapname': 'N/A', 'gametype': 'N/A', 'numplayers': 'N/A', 'maxplayers': 'N/A'}
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ python UT2k4test.py 
+b'\x80\x00\x00\x00\x02\x0b\x00\x00\x00\rnM.gunnie/be\x00\xfc\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x05\x00\x00\x00\tNoctisBE\x00<\x00\x00\x005\x00\x00\x00\x00\x00\x00 \x00\x00\x00\x00\x13\x1b\n\xf5\nRed Team Score\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x1b\n\xf5\nBlue Team Score\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00'
+0
+11
+Player info: [{'team': '-', 'player_id': '-', 'name': ('\x0b', 7), 'ping': (2, 8), 'score': (2, 8), 'id': (0, 12)}]
+77
+15
+Error querying UT2k4 server gameserver.noctis.info[8778]: 77
+{'status': 'Unreachable', 'maptitle': 'N/A', 'mapname': 'N/A', 'gametype': 'N/A', 'numplayers': 'N/A', 'maxplayers': 'N/A'}
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ python UT2k4test.py 
+b'\x80\x00\x00\x00\x02\x0b\x00\x00\x00\rnM.gunnie/be\x008\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00@\x05\x00\x00\x00\tNoctisBE\x00<\x00\x00\x005\x00\x00\x00\x00\x00\x00 \x00\x00\x00\x00\x13\x1b\n\xf5\nRed Team Score\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x1b\n\xf5\nBlue Team Score\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00'
+0
+11
+Player info: [{'team': '-', 'player_id': '-', 'name': ('\x0b', 7), 'ping': (2, 8), 'score': (2, 8), 'id': (0, 12)}]
+77
+15
+Error querying UT2k4 server gameserver.noctis.info[8778]: 77
+{'status': 'Unreachable', 'maptitle': 'N/A', 'mapname': 'N/A', 'gametype': 'N/A', 'numplayers': 'N/A', 'maxplayers': 'N/A'}
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ python UT2k4test.py 
+b'\x80\x00\x00\x00\x02\x0b\x00\x00\x00\rnM.gunnie/be\x00<\x00\x00\x00+\x00\x00\x00\x00\x00\x00@\x05\x00\x00\x00\tNoctisBE\x00<\x00\x00\x005\x00\x00\x00\x00\x00\x00 \x00\x00\x00\x00\x13\x1b\n\xf5\nRed Team Score\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x1b\n\xf5\nBlue Team Score\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00'
+0
+11
+Player info: [{'team': '-', 'player_id': '-', 'name': ('\x0b', 7), 'ping': (2, 8), 'score': (2, 8), 'id': (0, 12)}]
+77
+15
+Error querying UT2k4 server gameserver.noctis.info[8778]: 77
+{'status': 'Unreachable', 'maptitle': 'N/A', 'mapname': 'N/A', 'gametype': 'N/A', 'numplayers': 'N/A', 'maxplayers': 'N/A'}
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ python UT2k4test.py 
+Error querying UT2k4 server gameserver.noctis.info[8778]: timed out
+{'status': 'Unreachable', 'maptitle': 'N/A', 'mapname': 'N/A', 'gametype': 'N/A', 'numplayers': 'N/A', 'maxplayers': 'N/A'}
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ python UT2k4test.py 
+Error querying UT2k4 server gameserver.noctis.info[8778]: timed out
+{'status': 'Unreachable', 'maptitle': 'N/A', 'mapname': 'N/A', 'gametype': 'N/A', 'numplayers': 'N/A', 'maxplayers': 'N/A'}
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ python UT2k4test2.py 
+Error querying UT2004 server: [Errno -2] Name or service not known
+^CTraceback (most recent call last):
+  File "/home/sgilissen/gitdir/MAGE/UT2k4test2.py", line 50, in <module>
+    print(query_ut2004_server("gameserver.noctis.info", 10777))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sgilissen/gitdir/MAGE/UT2k4test2.py", line 15, in query_ut2004_server
+    response, _ = udp_socket.recvfrom(4096)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ python UT2k4test.py 
+Error querying UT2k4 server gameserver.noctis.info[8778]: timed out
+{'status': 'Unreachable', 'maptitle': 'N/A', 'mapname': 'N/A', 'gametype': 'N/A', 'numplayers': 'N/A', 'maxplayers': 'N/A'}
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ python UT2k4test.py 
+b'\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00J"\x00\x00\x00\x00\x00\x00\x12Noctis UT2k4 iCTF\x00\nDM-Rankin\x00\x0cxDeathMatch\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x020\x00\x00\x00'
+b'\x80\x00\x00\x00\x01\x0bServerMode\x00\ndedicated\x00\nAdminName\x00\tNoctisBE\x00\x0bAdminEmail\x00\x00\x0eServerVersion\x00\x053369\x00\nGameStats\x00\x06False\x00\x0eMaxSpectators\x00\x022\x00\x0bMinPlayers\x00\x022\x00\rEndTimeDelay\x00\x054.00\x00\nGoalScore\x00\x0325\x00\nTimeLimit\x00\x0320\x00\rTranslocator\x00\x06False\x00\x0bWeaponStay\x00\x05True\x00\rForceRespawn\x00\x06False\x00\x08mutator\x00\nDMMutator\x00'
+Error querying UT2k4 server gameserver.noctis.info[8778]: timed out
+{'status': 'Unreachable', 'maptitle': 'N/A', 'mapname': 'N/A', 'gametype': 'N/A', 'numplayers': 'N/A', 'maxplayers': 'N/A'}
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ python UT2k4test.py 
+b'\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00J"\x00\x00\x00\x00\x00\x00\x12Noctis UT2k4 iCTF\x00\x0bCTF-Avaris\x00\txCTFGame\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x020\x00\x00\x00'
+b'\x80\x00\x00\x00\x01\x0bServerMode\x00\ndedicated\x00\nAdminName\x00\tNoctisBE\x00\x0bAdminEmail\x00\x00\x0eServerVersion\x00\x053369\x00\nGameStats\x00\x06False\x00\x0eMaxSpectators\x00\x022\x00\x08Mutator\x00\nMutUTComp\x00\x0fUTComp_Version\x00\x051.7a\x00\x11Enhanced Netcode\x00\x06False\x00\x0bMinPlayers\x00\x022\x00\rEndTimeDelay\x00\x054.00\x00\nGoalScore\x00\x023\x00\nTimeLimit\x00\x0320\x00\rTranslocator\x00\x05True\x00\x0bWeaponStay\x00\x05True\x00\rForceRespawn\x00\x06False\x00\rBalanceTeams\x00\x05True\x00\x14PlayersBalanceTeams\x00\x05True\x00\x12FriendlyFireScale\x00\x030%\x00\x08mutator\x00\nDMMutator\x00'
+b'\x80\x00\x00\x00\x02\x00\x00\x00\x00\x13\x1b\n\xf5\nRed Team Score\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x1b\n\xf5\nBlue Team Score\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+b'\x80\x00\x00\x00\x02\x00\x00\x00\x00\x13\x1b\n\xf5\nRed Team Score\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x1b\n\xf5\nBlue Team Score\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+0
+11
+Player info: [{'team': '-', 'player_id': '-', 'name': ('', 6), 'ping': (2, 8), 'score': (2, 8), 'id': (0, 12)}]
+10
+15
+Error querying UT2k4 server gameserver.noctis.info[8778]: 10
+{'status': 'Unreachable', 'maptitle': 'N/A', 'mapname': 'N/A', 'gametype': 'N/A', 'numplayers': 'N/A', 'maxplayers': 'N/A'}
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ git add .
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ git commit -m 'Started work on UT2k4'
+[main cdee6bb] Started work on UT2k4
+ 4 files changed, 210 insertions(+)
+ create mode 100644 UT2k4test.py
+ create mode 100644 UT2k4test2.py
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ git push
+Enumerating objects: 15, done.
+Counting objects: 100% (15/15), done.
+Delta compression using up to 32 threads
+Compressing objects: 100% (9/9), done.
+Writing objects: 100% (9/9), 3.36 KiB | 3.36 MiB/s, done.
+Total 9 (delta 4), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (4/4), completed with 4 local objects.
+To github.com:sgilissen/MAGE.git
+   26531c8..cdee6bb  main -> main
+(MAGE) sgilissen@Rhea:~/gitdir/MAGE$ 
