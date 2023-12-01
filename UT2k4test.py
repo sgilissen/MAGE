@@ -91,7 +91,7 @@ def query_ut2k4_server():
                 print(response)
                 result = []
                 pos = 4
-                i = 0
+                player_start_byte = '\x02'
                 # if pos >= len(response):
                 #     return result  # empty data
                 while True:
