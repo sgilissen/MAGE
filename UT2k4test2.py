@@ -1,36 +1,22 @@
 import socket
 import struct
+import re
 
-
-def parseString(pos, data):
-    i = pos + 1
-    res = ""
-    while True:
-        if data[i] == 0: #end of the string
-            break
-        if data[i] == 0x1b: #byte color flag then escape RGB triplet
-            i += 4
-        res += chr(data[i])
-        i += 1
-    return res, i+1
-
-def parseInt(pos, data):
-    return int(data[pos]), pos + 4
 
 def query_ut2k4_server():
     # Instantiate server object
-    #server_host_value = obj.server_host
-    #server_port_value = int(obj.server_port)
+    # server_host_value = "217.79.181.250"
+    # server_port_value = 7777
     server_host_value = 'gameserver.noctis.info'
     server_port_value = 8778
-
 
     # Query types:
     # 0x01: Basic info
     # 0x01: Server info
     # 0x02: Player info
     # 0x03: Server info + player info
-    query_types = [0x00, 0x01, 0x02, 0x03]
+    # Make sure to do player info BEFORE anything else
+    query_types = [0x02, 0x00, 0x01]
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -42,10 +28,7 @@ def query_ut2k4_server():
 
         # Construct the UQP queries in a for-loop
         for query_type in query_types:
-            query = bytearray([0x80, 0, 0, 0, query_type])
-
-            # Set initial position in binary data
-            pos = 0
+            query = bytearray([0x78, 0, 0, 0, query_type])
 
             # Send the query to the server
             # UT2k4 UDP query uses gameport + 1
@@ -55,17 +38,7 @@ def query_ut2k4_server():
             result_dict = {}
             # Receive and decode the response
             response, _ = sock.recvfrom(2048)
-            # response = response.decode("utf-8", errors="replace")
-            # response = response[5:]
-            # print(f"response {query_type} ----")
-            # print(response)
 
-            # Unpack the data using the null character as a delimiter
-
-
-            # fields = struct.unpack('=II', response[:8])[0].split(b'\x00')
-            #print(fields)
-            # Parse the response and format to dict
             # Iterate over the fields and create key-value pairs, strip control characters
 
             # I hate doing it this way. Bit hacky. Maybe check if there's a better way later?
@@ -87,58 +60,34 @@ def query_ut2k4_server():
                     result_dict[key] = value
 
             elif query_type == 0x02:
-                print(response)
                 players = []
 
-                # Find the start of each player entry
-                start_idx = response.find(b'\x02')
+                # Remove the first 5 bytes
+                data = response[5:]
 
-                if start_idx != -1 and start_idx + 1 < len(response) and response[start_idx + 1] == 0x00:
-                    result_dict['players_list'] = players
-                    result_dict['numplayers'] = len(players)
+                # Set index
+                index = 0
+                while index < len(data):
+                    name_idx_end = data[index + 4:].find(b'\x00')
+                    player_name = data[index + 4: index + 4 + name_idx_end].decode('utf-8', errors='ignore')
 
-                else:
-                    while start_idx != -1:
-                        # Check if there's enough data for a complete player entry
-                        if start_idx + 8 < len(response):
-                            # Extract player data
-                            player_data = response[start_idx:start_idx + 8]
+                    # RegEx to clean name
+                    player_name = re.sub("\x1b...", "", player_name)
+                    player_name = re.sub("[\x00-\x1f]", "", player_name)
 
-                            # Parse ping, score, stats id, team, and player name
-                            ping = player_data[1] >> 4
-                            score = player_data[1] & 0x0F
-                            stats_team = int.from_bytes(player_data[2:4], byteorder='little')
-                            team = (stats_team >> 30) & 0x01
-                            stats_id = stats_team & 0x3FFFFFFF
+                    # If we get teams, break so we don't add these to the player list
+                    if player_name == 'Red Team Score':
+                        break
 
-                            print("----")
-                            print(player_data)
-                            print("====")
+                    players.append(player_name)
 
-                            # Extract player name until null terminator '\x00' is encountered
-                            name_end_idx = player_data.find(b'\x00', 5)
-                            if name_end_idx != -1:
-                                player_name = player_data[5:name_end_idx].decode('utf-8')
-                            else:
-                                player_name = ''
+                    # Move the index to the next entry start
+                    index += name_idx_end + 9
 
-
-                            # Append player information to the list
-                            players.append({
-                                'ping': ping,
-                                'score': score,
-                                'team': 'Red' if team == 1 else 'Blue',
-                                'stats_id': stats_id,
-                                'name': player_name
-                            })
-
-                            # Find the start of the next player entry
-                            start_idx = response.find(b'\x02', start_idx + 1)
-                        else:
-                            break
-
-                    result_dict['players_list'] = players
-                    result_dict['numplayers'] = len(players)
+                # Remove empty entries
+                players = list(filter(None, players))
+                result_dict['numplayers'] = len(players)
+                result_dict['player_list'] = players
 
             elif query_type == 0x03:
                 fields = struct.unpack(f'!{len(response)}s', response)[0].split(b'\x00')
@@ -146,9 +95,6 @@ def query_ut2k4_server():
                     key = fields[i].decode('utf-8', 'ignore').strip(control_chars)
                     value = fields[i + 1].decode('utf-8', 'ignore').strip(control_chars)
                     result_dict[key] = value
-
-            # print(f"----------- fields {query_type} -----------")
-            # print(result_dict)
 
             combined_result.update(result_dict)
 
