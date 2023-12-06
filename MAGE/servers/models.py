@@ -29,6 +29,30 @@ class UT99Server(GameServer):
         return self.server_name
 
 
+class UT2k3Server(GameServer):
+    rcon_user = models.CharField(max_length=200, verbose_name="RCON Username")
+    rcon_password = models.CharField(max_length=200, verbose_name="RCON Password")
+
+    class Meta:
+        verbose_name = "Unreal Tournament 2003 Server"
+        verbose_name_plural = "Unreal Tournament 2003 Servers"
+
+    def __str__(self):
+        return self.server_name
+
+
+class UT2k4Server(GameServer):
+    rcon_user = models.CharField(max_length=200, verbose_name="RCON Username")
+    rcon_password = models.CharField(max_length=200, verbose_name="RCON Password")
+
+    class Meta:
+        verbose_name = "Unreal Tournament 2004 Server"
+        verbose_name_plural = "Unreal Tournament 2004 Servers"
+
+    def __str__(self):
+        return self.server_name
+
+
 class Q3AServer(GameServer):
     rcon_user = models.CharField(max_length=200, verbose_name="RCON Username")
     rcon_password = models.CharField(max_length=200, verbose_name="RCON Password")

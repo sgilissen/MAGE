@@ -16,7 +16,7 @@ def query_ut2k4_server():
     # 0x02: Player info
     # 0x03: Server info + player info
     # Make sure to do player info BEFORE anything else
-    query_types = [0x02, 0x00, 0x01]
+    query_types = [0x02, 0x00, 0x01, 0x03]
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -45,6 +45,7 @@ def query_ut2k4_server():
             control_chars = ('\x00\x03\x05\x08\x0b\x0c\r\x11\x12\x02\x0e\n\t\x1e\x16'
                              '\x06\x0f\x10\x14\x13\x1b\x80\x01\x0b\x1b\x1a\x19\x1d')
             if query_type == 0x00:
+                # Unpack all the fields we know
                 fields = struct.unpack(f'!{len(response)}s', response)[0].split(b'\x00')
                 result_dict = {
                     "servername": fields[15].decode('utf-8', 'ignore').strip(control_chars),
@@ -52,6 +53,18 @@ def query_ut2k4_server():
                     "mapname": fields[16].decode('utf-8', 'ignore').strip(control_chars).lower(),
                     "gametype": fields[17].decode('utf-8', 'ignore').strip(control_chars)
                 }
+
+                # Parse the residual data, starting from the gametype as this is the last "readable" info in the packet
+                gametype_start = response.find(fields[17])
+                gametype_end = gametype_start + len(fields[17])
+                res_data = response[gametype_end:]
+
+                # Save to results dictionary we created above with the other data
+                result_dict['maxplayers'] = int.from_bytes(res_data[5:9], byteorder='little')
+                result_dict['ping'] = int.from_bytes(res_data[9:13], byteorder='little')
+                result_dict['flags'] = int.from_bytes(res_data[13:17], byteorder='little')
+                result_dict['skill'] = res_data[17]
+
             elif query_type == 0x01:
                 fields = struct.unpack(f'!{len(response)}s', response)[0].split(b'\x00')
                 for i in range(3, len(fields) - 1, 2):
@@ -100,7 +113,7 @@ def query_ut2k4_server():
 
         # return result_dict
         # cache.set(f'ut99server-{obj.server_host}', result_dict, timeout=polling_timeout)
-        print(combined_result)
+        # print(combined_result)
 
     except Exception as e:
         print(f"Error querying UT2k4 server {server_host_value}[{server_port_value}]: {str(e)}")
