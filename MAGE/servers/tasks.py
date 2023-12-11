@@ -1,10 +1,14 @@
 import socket
 from celery import shared_task
+from celery.utils.log import get_task_logger
 from django.core.cache import cache
 from pyq3serverlist import Server as Q3Server
 from pyq3serverlist import PyQ3SLError, PyQ3SLTimeoutError
 import re
 import struct
+
+# Set up logging
+logger = get_task_logger(__name__)
 
 # Polling timeout. Maybe we can set this up in a setting?
 polling_timeout = 300
@@ -44,7 +48,7 @@ def query_ut99_server(obj):
         cache.set(f'ut99server-{obj.server_host}', result_dict, timeout=polling_timeout)
 
     except Exception as e:
-        print(f"Error querying UT99 server {server_host_value}[{server_port_value}]: {str(e)}")
+        logger.exception(f"Error querying UT99 server {server_host_value}[{server_port_value}]: {str(e)}")
         sock.close()
 
         result_dict = {
@@ -95,7 +99,7 @@ def query_q3a_server(obj):
         cache.set(f'q3aserver-{obj.server_host}', result_dict, timeout=60)
 
     except (PyQ3SLTimeoutError, PyQ3SLError) as e:
-        print(f"Error querying UT99 server {server_port_value}[{server_port_value}]: {str(e)}")
+        logger.exception(f"Error querying Q3A server {server_port_value}[{server_port_value}]: {str(e)}")
         # Build the dictionary
         result_dict = {
             'status': 'Unreachable',
@@ -217,9 +221,8 @@ def query_ut2k4_server(obj):
         # return result_dict
         cache.set(f'ut2k4server-{obj.server_host}', combined_result, timeout=polling_timeout)
 
-
     except Exception as e:
-        print(f"Error querying UT2k4 server {server_host_value}[{server_port_value}]: {str(e)}")
+        logger.exception(f"Error querying UT2k4 server {server_host_value}[{server_port_value}]: {str(e)}")
         sock.close()
 
         result_dict = {
