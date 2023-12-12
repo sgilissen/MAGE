@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
+import logging
 from django.contrib.auth.models import User, Group
 from django.core.cache import cache
 from django.template.defaulttags import register
@@ -8,6 +9,8 @@ from .tasks import *
 from rest_framework import viewsets
 from rest_framework import permissions
 from .serializers import UserSerializer, GroupSerializer
+
+logger = logging.getLogger(__name__)
 
 
 # Helper functions
@@ -29,8 +32,13 @@ def fetch_server_cached(server):
                 query_ut99_server(server)
             case "q3aserver":
                 query_q3a_server(server)
+            case "ut2k4server":
+                query_ut2k4_server(server)
+            case "ut2k3server":
+                # UT2k4 and UT2k3 use the same protocol
+                query_ut2k4_server(server)
             case _:
-                print("Unknown server")
+                logger.info("Views: Unknown server type")
 
         server_data = {
             'server_type': server_type,
@@ -66,9 +74,6 @@ class ServerViewSet(viewsets.ModelViewSet):
             "numplayers": server_data['numplayers'],
             "maxplayers": server_data['maxplayers'],
         }
-
-
-
 
 
 def homepage(request):

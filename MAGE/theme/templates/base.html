@@ -34,7 +34,7 @@
         <div class="container flex flex-col items-start px-6 pt-2 mx-auto md:flex-row">
             <ul role="list" class="divide-y divide-gray-100 w-full">
                 {% for srv, data in servers.items %}
-                <li class="flex justify-between gap-x-6 py-5 w-full">
+                <li class="flex justify-between gap-x-6 py-5 w-full" data-serverpk="{{ srv.pk }}">
                     <div class="flex min-w-0 gap-x-4">
                         <div class="bg-indigo-900 rounded-2xl drop-shadow-xl">
                             {% with 'img/maps/'|add:data.server_type|add:'/'|add:data.mapname|add:'.jpg' as map_image_path %}

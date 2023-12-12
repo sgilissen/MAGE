@@ -1,6 +1,7 @@
 import socket
 from celery import shared_task
 from celery.utils.log import get_task_logger
+from channels.layers import get_channel_layer
 from django.core.cache import cache
 from pyq3serverlist import Server as Q3Server
 from pyq3serverlist import PyQ3SLError, PyQ3SLTimeoutError
@@ -14,6 +15,11 @@ logger = get_task_logger(__name__)
 polling_timeout = 300
 
 
+def wsnotify_serverdata(sender, result, **kwargs):
+    # Notify WebSocket consumers
+    ...
+
+
 @shared_task
 def query_ut99_server(obj):
     """
@@ -23,6 +29,7 @@ def query_ut99_server(obj):
     """
     server_host_value = obj.server_host
     server_port_value = obj.server_port
+    server_pk = obj.pk
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         # Create a socket connection
@@ -71,6 +78,7 @@ def query_q3a_server(obj):
     # Instantiate server object
     server_host_value = obj.server_host
     server_port_value = int(obj.server_port)
+    server_pk = obj.pk
     server = Q3Server(server_host_value, server_port_value)
 
     # Gametype dict
@@ -115,15 +123,22 @@ def query_q3a_server(obj):
 
 @shared_task
 def query_ut2k4_server(obj):
+    """
+    Query an Unreal Tournament 2004 server via UDP and return a dictionary with the results
+    Code by sgilissen (NoctisBE), with special thanks to CVSoft and Dark1.
+    :param obj: Django query object
+    :return: dictionary
+    """
     server_host_value = obj.server_host
     server_port_value = int(obj.server_port)
+    server_pk = obj.pk
 
     # Query types:
     # 0x01: Basic info
     # 0x01: Server info
     # 0x02: Player info
     # 0x03: Server info + player info
-    # Make sure to do player info BEFORE anything else
+    # Make sure to query the player info BEFORE anything else. For some reason the data gets garbled otherwise...
     query_types = [0x02, 0x00, 0x01]
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -153,7 +168,7 @@ def query_ut2k4_server(obj):
             control_chars = ('\x00\x03\x05\x08\x0b\x0c\r\x11\x12\x02\x0e\n\t\x1e\x16'
                              '\x06\x0f\x10\x14\x13\x1b\x80\x01\x0b\x1b\x1a\x19\x1d')
             if query_type == 0x00:
-                # Unpack all the fields we know, place it int he dict
+                # Unpack all the fields we know, place it in the dict
                 fields = struct.unpack(f'!{len(response)}s', response)[0].split(b'\x00')
                 result_dict['servername'] = fields[15].decode('utf-8', 'ignore').strip(control_chars),
                 result_dict['maptitle'] = fields[16].decode('utf-8', 'ignore').strip(control_chars)
@@ -190,7 +205,7 @@ def query_ut2k4_server(obj):
                     name_idx_end = data[index + 4:].find(b'\x00')
                     player_name = data[index + 4: index + 4 + name_idx_end].decode('utf-8', errors='ignore')
 
-                    # RegEx to clean name
+                    # RegEx to clean the player name
                     player_name = re.sub("\x1b...", "", player_name)
                     player_name = re.sub("[\x00-\x1f]", "", player_name)
 
