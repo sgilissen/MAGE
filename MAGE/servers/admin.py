@@ -29,6 +29,7 @@ class ServerMeta(type(admin.ModelAdmin)):
 class ServerChildAdmin(PolymorphicChildModelAdmin):
     """ Base model class for all child models """
     base_model = GameServer
+    polymorphic_list = True
 
 
 @admin.register(UT99Server)
@@ -39,9 +40,7 @@ class UT99ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
                     "display_server_numplayers", "display_server_maxplayers"]
 
     def query_server(self, obj):
-        # Get the server type from the model to cache it. This way we don't have to hardcode the cache identifier.
-        server_type = ContentType.objects.get_for_model(obj).model
-        server_data = cache.get(f'{server_type}-{obj.server_host}')
+        server_data = cache.get(f'gameserver-{obj.pk}')
 
         # Server data is not cached. Perform asynchronous task to cache data.
         if server_data is None:
@@ -71,8 +70,8 @@ class UT2k4ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
 
     def query_server(self, obj):
         # Get the server type from the model to cache it. This way we don't have to hardcode the cache identifier.
-        server_type = ContentType.objects.get_for_model(obj).model
-        server_data = cache.get(f'{server_type}-{obj.server_host}')
+        # server_type = ContentType.objects.get_for_model(obj).model
+        server_data = cache.get(f'gameserver-{obj.pk}')
 
         # Server data is not cached. Perform asynchronous task to cache data.
         if server_data is None:
@@ -103,8 +102,8 @@ class UT2k4ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
 
     def query_server(self, obj):
         # Get the server type from the model to cache it. This way we don't have to hardcode the cache identifier.
-        server_type = ContentType.objects.get_for_model(obj).model
-        server_data = cache.get(f'{server_type}-{obj.server_host}')
+        # server_type = ContentType.objects.get_for_model(obj).model
+        server_data = cache.get(f'gameserver-{obj.pk}')
 
         # Server data is not cached. Perform asynchronous task to cache data.
         if server_data is None:
@@ -134,8 +133,8 @@ class Q3AServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
 
     def query_server(self, obj):
         # Get the server type from the model to cache it. This way we don't have to hardcode the cache identifier.
-        server_type = ContentType.objects.get_for_model(obj).model
-        server_data = cache.get(f'{server_type}-{obj.server_host}')
+        # server_type = ContentType.objects.get_for_model(obj).model
+        server_data = cache.get(f'gameserver-{obj.pk}')
 
         # Server data is not cached. Perform asynchronous task to cache data.
         if server_data is None:
@@ -159,6 +158,11 @@ class Q3AServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
 @admin.register(GameServer)
 class ServerParentAdmin(PolymorphicParentModelAdmin):
     base_model = GameServer
-    child_models = (UT99Server, Q3AServer)
-    list_display = ["server_name", "server_host"]
-    list_filter = (PolymorphicChildModelFilter,)  # This is optional.
+    child_models = (UT99Server, Q3AServer, UT2k3Server, UT2k4Server)
+    list_display = ["server_name", "server_host", "server_port", "server_type"]
+    list_filter = (PolymorphicChildModelFilter,)
+
+    @admin.display(description="Server Type")
+    def server_type(self, obj):
+        # Get the verbose name of the type of server from the instance class through the Polymorphic object.
+        return f"{obj.get_real_instance_class()._meta.verbose_name}"

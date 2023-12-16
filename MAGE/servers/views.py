@@ -22,7 +22,7 @@ def fetch_server_cached(server):
     """
     # Get the server type from the model to cache it. This way we don't have to hardcode the cache identifier.
     server_type = ContentType.objects.get_for_model(server).model
-    server_data = cache.get(f'{server_type}-{server.server_host}')
+    server_data = cache.get(f'gameserver-{server.pk}')
 
     # Server data is not cached. Perform asynchronous task to cache data.
     if server_data is None:

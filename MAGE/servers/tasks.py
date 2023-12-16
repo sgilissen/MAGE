@@ -52,7 +52,7 @@ def query_ut99_server(obj):
         result_dict['status'] = 'Available'
 
         # return result_dict
-        cache.set(f'ut99server-{obj.server_host}', result_dict, timeout=polling_timeout)
+        cache.set(f'gameserver-{obj.pk}', result_dict, timeout=polling_timeout)
 
     except Exception as e:
         logger.exception(f"Error querying UT99 server {server_host_value}[{server_port_value}]: {str(e)}")
@@ -66,7 +66,7 @@ def query_ut99_server(obj):
             'numplayers': 'N/A',
             'maxplayers': 'N/A'
         }
-        cache.set(f'ut99server-{obj.server_host}', result_dict, timeout=polling_timeout)
+        cache.set(f'gameserver-{obj.pk}', result_dict, timeout=polling_timeout)
 
     finally:
         # Close the socket connection
@@ -104,7 +104,7 @@ def query_q3a_server(obj):
             'maxplayers': info['sv_maxclients'],
         }
         # Save to cache
-        cache.set(f'q3aserver-{obj.server_host}', result_dict, timeout=60)
+        cache.set(f'gameserver-{obj.pk}', result_dict, timeout=60)
 
     except (PyQ3SLTimeoutError, PyQ3SLError) as e:
         logger.exception(f"Error querying Q3A server {server_port_value}[{server_port_value}]: {str(e)}")
@@ -118,7 +118,7 @@ def query_q3a_server(obj):
             'maxplayers': 'N/A'
         }
         # Save to cache
-        cache.set(f'q3aserver-{obj.server_host}', result_dict, timeout=60)
+        cache.set(f'gameserver-{obj.pk}', result_dict, timeout=60)
 
 
 @shared_task
@@ -234,7 +234,7 @@ def query_ut2k4_server(obj):
             combined_result['status'] = "Available"
 
         # return result_dict
-        cache.set(f'ut2k4server-{obj.server_host}', combined_result, timeout=polling_timeout)
+        cache.set(f'gameserver-{obj.pk}', combined_result, timeout=polling_timeout)
 
     except Exception as e:
         logger.exception(f"Error querying UT2k4 server {server_host_value}[{server_port_value}]: {str(e)}")
@@ -248,7 +248,7 @@ def query_ut2k4_server(obj):
             'numplayers': 'N/A',
             'maxplayers': 'N/A'
         }
-        cache.set(f'ut2k4server-{obj.server_host}', result_dict, timeout=polling_timeout)
+        cache.set(f'gameserver-{obj.pk}', result_dict, timeout=polling_timeout)
 
     finally:
         # Close the socket connection
