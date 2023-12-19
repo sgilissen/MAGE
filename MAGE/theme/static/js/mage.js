@@ -2,12 +2,14 @@
 const serverSocket = new WebSocket('ws://' + window.location.host + '/ws/servers/');
 let serverRefreshTimer = 30;
 
-function setRefreshTimer(secs){
+function setRefreshTimer(totalSecs){
     let setRefreshTimer = setInterval(function() {
         if (serverRefreshTimer <= 0) {
             clearInterval(setRefreshTimer);
         }
+        let barPercentage = Math.round((100 * serverRefreshTimer) / totalSecs);
         document.getElementById('refreshtimer').innerHTML = "Refreshing data in " + serverRefreshTimer.toString() + "s";
+        document.getElementById('refreshprogress').style.width = barPercentage + '%';
         serverRefreshTimer -= 1;
     }, 900);
 }
