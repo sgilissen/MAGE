@@ -3,15 +3,12 @@ from polymorphic.admin import PolymorphicChildModelAdmin, PolymorphicParentModel
 from .models import GameServer, UT99Server, Q3AServer, UT2k3Server, UT2k4Server
 from .tasks import query_ut99_server, query_q3a_server, query_ut2k4_server
 from django.core.cache import cache
-from django.contrib.contenttypes.models import ContentType
-import socket
-from django.utils.html import format_html
 
 
 # Helper classes
 class ServerMeta(type(admin.ModelAdmin)):
     def __new__(cls, name, bases, attrs):
-        keys_to_display = ['status', 'maptitle', 'mapname', 'gametype', 'numplayers', 'maxplayers']
+        keys_to_display = ['status_verbose', 'maptitle', 'mapname', 'gametype', 'numplayers', 'maxplayers']
 
         for key in keys_to_display:
             method_name = f'display_server_{key}'
@@ -35,7 +32,7 @@ class ServerChildAdmin(PolymorphicChildModelAdmin):
 @admin.register(UT99Server)
 class UT99ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
     base_model = UT99Server
-    list_display = ["server_name", "server_host", "server_port", "display_server_status",
+    list_display = ["server_name", "server_host", "server_port", "display_server_status_verbose",
                     "display_server_maptitle", "display_server_mapname", "display_server_gametype",
                     "display_server_numplayers", "display_server_maxplayers"]
 
@@ -46,7 +43,8 @@ class UT99ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
         if server_data is None:
             query_ut99_server(obj)
             server_data = {
-                'status': 'Polling server...',
+                'status_verbose': 'Polling server...',
+                'status': 'server_polling',
                 'maptitle': 'N/A',
                 'mapname': 'N/A',
                 'gametype': 'N/A',
@@ -64,7 +62,7 @@ class UT99ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
 @admin.register(UT2k3Server)
 class UT2k4ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
     base_model = UT2k3Server
-    list_display = ["server_name", "server_host", "server_port", "display_server_status",
+    list_display = ["server_name", "server_host", "server_port", "display_server_status_verbose",
                     "display_server_maptitle", "display_server_mapname", "display_server_gametype",
                     "display_server_numplayers", "display_server_maxplayers"]
 
@@ -78,7 +76,8 @@ class UT2k4ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
             # UT2k3 uses the same protocol as UT2k4
             query_ut2k4_server(obj)
             server_data = {
-                'status': 'Polling server...',
+                'status_verbose': 'Polling server...',
+                'status': 'server_polling',
                 'maptitle': 'N/A',
                 'mapname': 'N/A',
                 'gametype': 'N/A',
@@ -96,7 +95,7 @@ class UT2k4ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
 @admin.register(UT2k4Server)
 class UT2k4ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
     base_model = UT2k4Server
-    list_display = ["server_name", "server_host", "server_port", "display_server_status",
+    list_display = ["server_name", "server_host", "server_port", "display_server_status_verbose",
                     "display_server_maptitle", "display_server_mapname", "display_server_gametype",
                     "display_server_numplayers", "display_server_maxplayers"]
 
@@ -109,7 +108,8 @@ class UT2k4ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
         if server_data is None:
             query_ut2k4_server(obj)
             server_data = {
-                'status': 'Polling server...',
+                'status_verbose': 'Polling server...',
+                'status': 'server_polling',
                 'maptitle': 'N/A',
                 'mapname': 'N/A',
                 'gametype': 'N/A',
@@ -127,7 +127,7 @@ class UT2k4ServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
 @admin.register(Q3AServer)
 class Q3AServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
     base_model = Q3AServer
-    list_display = ["server_name", "server_host", "server_port", "display_server_status",
+    list_display = ["server_name", "server_host", "server_port", "display_server_status_verbose",
                     "display_server_maptitle", "display_server_mapname", "display_server_gametype",
                     "display_server_numplayers", "display_server_maxplayers"]
 
@@ -140,7 +140,8 @@ class Q3AServerAdmin(ServerChildAdmin, metaclass=ServerMeta):
         if server_data is None:
             query_q3a_server(obj)
             server_data = {
-                'status': 'Polling server...',
+                'status_verbose': 'Polling server...',
+                'status': 'server_polling',
                 'maptitle': 'N/A',
                 'mapname': 'N/A',
                 'gametype': 'N/A',

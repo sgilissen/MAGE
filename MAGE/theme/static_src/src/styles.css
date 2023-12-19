@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .server_online_container {
+        @apply bg-emerald-500/20;
+    }
+
+    .server_online {
+        @apply bg-emerald-500;
+    }
+
+    .server_polling_container {
+        @apply bg-amber-500/20;
+    }
+
+    .server_polling {
+        @apply bg-amber-500;
+    }
+
+    .server_offline_container {
+        @apply bg-red-500/20;
+    }
+
+    .server_offline {
+        @apply bg-red-500;
+    }
+}

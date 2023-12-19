@@ -42,7 +42,8 @@ def fetch_server_cached(server):
 
         server_data = {
             'server_type': server_type,
-            'status': 'Polling server...',
+            'status_verbose': 'Polling server...',
+            'status': 'server_polling',
             'maptitle': '-',
             'mapname': '-',
             'gametype': '-',
@@ -67,6 +68,7 @@ class ServerViewSet(viewsets.ModelViewSet):
             "server_type": server_data['server_type'],
             "hostname": srv.server_host,
             "port": srv.server_port,
+            "status_verbose": server_data['status_verbose'],
             "status": server_data['status'],
             "mapname": server_data['mapname'],
             "maptitle": server_data['maptitle'],
@@ -89,6 +91,7 @@ def homepage(request):
             "server_type": server_data['server_type'],
             "hostname": srv.server_host,
             "port": srv.server_port,
+            "status_verbose": server_data['status_verbose'],
             "status": server_data['status'],
             "mapname": server_data['mapname'],
             "maptitle": server_data['maptitle'],

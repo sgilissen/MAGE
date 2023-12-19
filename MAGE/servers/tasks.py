@@ -12,7 +12,7 @@ import struct
 logger = get_task_logger(__name__)
 
 # Polling timeout. Maybe we can set this up in a setting?
-polling_timeout = 300
+polling_timeout = 60
 
 
 def wsnotify_serverdata(sender, result, **kwargs):
@@ -49,7 +49,8 @@ def query_ut99_server(obj):
         # Parse the response and format to dict
         pairs = response.split('\\')[1:]
         result_dict = dict(zip(pairs[::2], pairs[1::2]))
-        result_dict['status'] = 'Available'
+        result_dict['status_verbose'] = 'Available'
+        result_dict['status'] = 'server_online'
 
         # return result_dict
         cache.set(f'gameserver-{obj.pk}', result_dict, timeout=polling_timeout)
@@ -59,7 +60,8 @@ def query_ut99_server(obj):
         sock.close()
 
         result_dict = {
-            'status': 'Unreachable',
+            'status_verbose': 'Unreachable',
+            'status': 'server_offline',
             'maptitle': 'N/A',
             'mapname': 'N/A',
             'gametype': 'N/A',
@@ -96,7 +98,8 @@ def query_q3a_server(obj):
 
         # Build the dictionary
         result_dict = {
-            'status': 'Available',
+            'status_verbose': 'Available',
+            'status': 'server_online',
             'maptitle': info['mapname'],
             'mapname': info['mapname'],
             'gametype': sv_gametypes[info['g_gametype']],
@@ -110,7 +113,8 @@ def query_q3a_server(obj):
         logger.exception(f"Error querying Q3A server {server_port_value}[{server_port_value}]: {str(e)}")
         # Build the dictionary
         result_dict = {
-            'status': 'Unreachable',
+            'status_verbose': 'Unreachable',
+            'status': 'server_offline',
             'maptitle': 'N/A',
             'mapname': 'N/A',
             'gametype': 'N/A',
@@ -231,7 +235,8 @@ def query_ut2k4_server(obj):
                     result_dict[key] = value
 
             combined_result.update(result_dict)
-            combined_result['status'] = "Available"
+            combined_result['status_verbose'] = "Available"
+            combined_result['status'] = "server_online"
 
         # return result_dict
         cache.set(f'gameserver-{obj.pk}', combined_result, timeout=polling_timeout)
@@ -241,7 +246,8 @@ def query_ut2k4_server(obj):
         sock.close()
 
         result_dict = {
-            'status': 'Unreachable',
+            'status_verbose': 'Unreachable',
+            'status': 'server_offline',
             'maptitle': 'N/A',
             'mapname': 'N/A',
             'gametype': 'N/A',

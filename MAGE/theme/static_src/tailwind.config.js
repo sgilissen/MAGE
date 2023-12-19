@@ -41,6 +41,14 @@ module.exports = {
          */
         // '../../**/*.py'
     ],
+    safelist: [
+        'server_online_container',
+        'server_online',
+        'server_offline_container',
+        'server_offline',
+        'server_polling_container',
+        'server_polling'
+    ],
     theme: {
         extend: {},
     },
