@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% load static tailwind_tags %}
+{% load compress %}
+{% block scripts %}
+    {% compress js %}
+        <script src="{% static 'js/mage.js' %}"></script>
+    {% endcompress %}
+{% endblock %}
+{% block content %}
+<!-- Start server list -->
+<div class="container flex flex-row items-start px-6 pt-2 pb-0 mx-auto my-0">
+    <div class="grid w-full gap-6 grid-cols-10">
+        <div class="col-span-9"><h1 class="text-gray-100 text-3xl p-0">Server Status</h1></div>
+
+        <div>
+            <p class="text-xs text-right text-white pt-1 pb-1" id="refreshtimer">Refreshing data...</p>
+            <div class="bg-gray-500 rounded-full h-1.5 mb-4 w-full ">
+                <div class="bg-indigo-900 h-1.5 rounded-full dark:bg-indigo-900 transition-all " style="width: 100%" id="refreshprogress"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--
+<div class="container flex flex-col items-start mx-auto bg-gray-500 rounded-full h-1.5 mb-4 dark:bg-gray-700 md:flex-row ">
+    <div class="bg-indigo-900 h-1.5 rounded-full dark:bg-indigo-900 transition-all" style="width: 100%" id="refreshprogress"></div>
+</div>-->
+
+<div class="container flex flex-col items-start px-6 pt-2 mx-auto md:flex-row">
+
+    <ul role="list" class="divide-y divide-gray-100 w-full">
+        {% for srv, data in servers.items %}
+            <li class="flex justify-between gap-x-6 py-5 w-full" data-serverpk="{{ srv.pk }}">
+                <div class="flex min-w-0 gap-x-4">
+                    <div class="bg-indigo-900 rounded-2xl drop-shadow-xl pb-1">
+                        {% with 'img/maps/'|add:data.server_type|add:'/'|add:data.mapname|add:'.jpg' as map_image_path %}
+                            {% if map_image_path|file_exists %}
+                                <img class="h-20 w-24 flex-none rounded-2xl" id="mapimg" src="{% static 'img/maps/'|add:data.server_type|add:'/'|add:data.mapname|add:'.jpg' %}" alt="data.mapname">
+                            {% else %}
+                                <img class="h-20 w-24 flex-none rounded-2xl" id="mapimg" src="{% static 'img/maps/nomap.jpg' %}" alt="No map screenshot">
+                            {% endif %}
+                        {% endwith %}
+                        <p class="text-center text-gray-500 text-xs" id="mapname">{{ data.mapname }}</p>
+                    </div>
+
+                    <div class="min-w-0 flex-auto">
+                        <p class="text-lg font-semibold leading-6 text-gray-100 bg-indigo-900 rounded-2xl p-1 pr-2 drop-shadow-xl"><img class="inline p-1 bg-black rounded-xl" id="servertype" src="{% static 'img/icons/'|add:data.server_type|add:'.png' %}" alt="Q3A"><span class="pl-1">{{ srv }}</span></p>
+                        <p class="mt-1 truncate text-xs leading-5 text-gray-100" id="gametype"><strong>Game type: </strong>{{ data.gametype }}</p>
+                        <p class="mt-1 truncate text-xs leading-5 text-gray-100" id="maptitle"><strong>Map title: </strong>{{ data.maptitle }}</p>
+
+                    </div>
+                </div>
+                <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                    <div class="mt-1 flex items-center gap-x-1.5">
+                        <div class="flex-none rounded-full {{ data.status }}_container p-1" id="statuscontainer">
+                            <div class="h-1.5 w-1.5 rounded-full {{ data.status }}" id="statusindicator"></div>
+                        </div>
+
+                        <p class="text-xs leading-5 text-gray-500" id="serverstatus">{{ data.status_verbose }}</p>
+                    </div>
+                    <p class="mt-1 truncate text-xs leading-5 text-gray-100" id="players"><strong>Players: </strong>{{ data.numplayers }} / {{ data.maxplayers }}</p>
+                    <p class="mt-1 truncate text-xs leading-5 text-gray-100" id="host"><strong>Host: </strong>{{ data.hostname }}:{{ data.port }}</p>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

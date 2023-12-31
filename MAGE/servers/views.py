@@ -78,7 +78,7 @@ class ServerViewSet(viewsets.ModelViewSet):
         }
 
 
-def homepage(request):
+def server_list(request):
     """
     Render homepage
     :param request:
@@ -105,4 +105,28 @@ def homepage(request):
         'name': "test"
     }
 
-    return render(request=request, context=context, template_name="../../theme/templates/base.html")
+    return render(request=request, context=context, template_name="../../theme/templates/server_list.html")
+
+
+def server_view(request, server_pk):
+    current_user = request.user
+    current_server = models.GameServer.objects.filter(pk=server_pk)[0]
+    server_data = fetch_server_cached(current_server)
+
+    context = {
+        'server': {
+            "server_type": server_data['server_type'],
+            "hostname": current_server.server_host,
+            "port": current_server.server_port,
+            "status_verbose": server_data['status_verbose'],
+            "status": server_data['status'],
+            "mapname": server_data['mapname'],
+            "maptitle": server_data['maptitle'],
+            "gametype": server_data['gametype'],
+            "numplayers": server_data['numplayers'],
+            "maxplayers": server_data['maxplayers'],
+        }
+    }
+
+    return render(request=request, context=context, template_name="../../theme/templates/server_view.html")
+

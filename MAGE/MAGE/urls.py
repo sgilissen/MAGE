@@ -23,7 +23,7 @@ admin.site.site_header = "MAGE - Management and Administration for Game Environm
 admin.site.index_title = "Administration Home"
 
 urlpatterns = [
-    path("", include("servers.urls")),
+    path("servers/", include("servers.urls")),
     path('admin/', admin.site.urls),
     path("__reload__/", include("django_browser_reload.urls")),
 ]

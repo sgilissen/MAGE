@@ -7,5 +7,6 @@ app_name = "servers"
 
 
 urlpatterns = [
-    path("", views.homepage, name="homepage"),
+    path("", views.server_list, name="servers"),
+    path("<server_pk>/", views.server_view, name="server_view")
 ]

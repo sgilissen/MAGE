@@ -1,6 +1,10 @@
+// Get root URL
+const rootUrl = window.location.host;
+
 // Create websocket
-const serverSocket = new WebSocket('ws://' + window.location.host + '/ws/servers/');
+const serverSocket = new WebSocket('ws://' + rootUrl + '/ws/servers/');
 let serverRefreshTimer = 30;
+
 
 function setRefreshTimer(totalSecs){
     let setRefreshTimer = setInterval(function() {
@@ -27,7 +31,7 @@ serverSocket.onmessage = function (event) {
     for (let index = 0; index < srvPkElements.length; ++index) {
         let serverPk = srvPkElements[index].dataset.serverpk;
         let serverInfo = serverData[serverPk].server_info
-        srvPkElements[index].querySelector("#mapimg").src = 'static/' + serverInfo.mapimg;
+        srvPkElements[index].querySelector("#mapimg").src = '/static/' + serverInfo.mapimg;
         srvPkElements[index].querySelector("#mapname").innerHTML = serverInfo.mapname;
         srvPkElements[index].querySelector("#maptitle").innerHTML = "<strong>Map title: </strong>" + serverInfo.maptitle;
         srvPkElements[index].querySelector("#gametype").innerHTML = "<strong>Game type: </strong>" + serverInfo.gametype;
