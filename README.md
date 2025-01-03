@@ -1,6 +1,8 @@
 # MAGE
 MAGE - Management and Administration for Game Environments
 
+![MAGE server view (frontend)](/MAGE-screenshot.png?raw=true "MAGE server view (frontend)")
+
 MAGE is a Django-based gameserver manager. 
 It queries gameservers to display the current in-game statistics. 
 While it's still very much work in progress (and probably forever will be, seeing as there are constantly new games being added), it has been used in several game tournaments already. 
